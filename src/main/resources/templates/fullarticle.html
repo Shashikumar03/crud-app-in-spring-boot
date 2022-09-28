@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Full Article</title>
+<link rel="stylesheet" th:href="@{/fullarticle.css}" />
+</head>
+<body>
+	<center>
+		<h1>Blog</h1>
+	</center>
+
+	<table class="table table-bordered">
+		<thead>
+
+		</thead>
+		<tbody>
+			<tr th:each="post: ${postList}">
+
+				<td>
+					<p th:text="${post.getId()}" />
+					<h1 th:text="${post.getTitle()}"></h1>
+					<p th:text="${post.getExcerpt()}" />
+					<p th:text="${post.getContent()}" />
+					<div style="display: flex;">
+						<p th:text="tags+':'" />
+						<p style="margin: 5px;" th:each="tags : ${post.getTags()}"
+							th:text="${tags.getName()} " />
+					</div>
+					<p th:text="'Author:  '+ ${post.getAuthor()}" />
+					<p th:text="'PublishedAt:  '+ ${post.getPublishAt()}" />
+					<form th:action="@{'/deletePost/' + ${post.getId()}}" method="post">
+						<button type="submit">Delete</button>
+					</form>
+					<form th:action="@{'/fullarticle/' + ${post.getId()} + '/update' }" method="post">
+						<button type="submit">Update</button>
+					</form>
+
+				</td>
+
+			</tr>
+
+		</tbody>
+	</table>
+	<hr>
+
+	<!-- All comment ko dikhayega aur sath  me hi update and delete karne wala option v dega -->
+	<div class="main-commentsContainer">
+		
+			<div th:each="AllComments: ${AllComments}">
+				<div id="comment">
+					<p th:text="${AllComments.getComment()}">
+					<p th:text="'CommentBy: '+ ${AllComments.getName()}">
+					<p th:text="'email: '+${AllComments.getEmail()}">
+				</div>
+				<br />
+				<form th:action="@{/comment/edit/{id}(id=${AllComments.getId()})}" method="post">
+				<button id="update" name="update" >update</button>
+				</form>
+				<form th:action="@{/delete/post/{id}(id=${AllComments.getId()})}" method="post">
+				<button id="delete" name="delete">Delete</button>
+				</form>
+				<hr>
+			</div>
+		
+	</div>
+
+	<hr>
+	<!-- commet ko update karne ke liye -->
+	<div class="main-container">
+		<p>write your Comments</p>
+		<form th:action="@{/comment/{id}(id=${id})}" method="post">
+			<input type="text" id="comment-box" placeholder="Enter comment"
+				required name="comment" /><br /> <input type="text"
+				placeholder="enter name" required name="name" /> <input
+				type="email" placeholder="Email" required name="email" /><br /> <input
+				type="hidden" required name="createAt" th:value="${dateAndTime}" /><br />
+			<input type="hidden" required name="updateAt"
+				th:value="${dateAndTime}" /><br />
+			<button id="post" name="post">Post</button>
+		</form>
+	</div>
+
+</body>
+</html>

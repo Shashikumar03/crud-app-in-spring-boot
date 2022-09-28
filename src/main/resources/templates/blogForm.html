@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+<title>blog</title>
+
+</head>
+
+<body>
+
+	<form th:action="@{/newblog}" method="post">
+		<div class="container">
+			<h1 class="main_heading">Blog post</h1>
+			<hr>
+			<p>
+				title <input type="text" required name="title"
+					placeholder=" title of blog">
+			</p>
+			<p>
+				excerpt <input type="text" required name="excerpt"
+					placeholder="excerpt">
+			</p>
+			<p>
+				<label for="content"> Write content:</label>
+			</p>
+			<textarea id="content" placeholder="write blogs" name="content"
+				rows="10" cols="60"></textarea>
+			<br>
+			<p>
+				author: <input type="text" required name="author"
+					placeholder="author name">
+			</p>
+
+			<p>
+
+				<input type="hidden" th:value="${dateAndTime}" name="publishAt"
+					id="published">
+			</p>
+
+			<p>
+				is published: <input type="checkbox" name="isPublished" th:value="${true}">
+
+			</p>
+			
+			<p>
+				tags <input type="text" required name="name">
+
+			</p>
+
+			<p>
+
+				<input type="hidden" th:value="${dateAndTime}" name="createAt"
+					id="published">
+			</p>
+			<p>
+
+				<input type="hidden" th:value="${dateAndTime}" name="updateAt"
+					id="published">
+			</p>
+			<p class="pay">
+				<input type="submit" name="submit" id="btn1" value="post">
+			</p>
+		</div>
+	</form>
+
+
+</body>
+
+</html>

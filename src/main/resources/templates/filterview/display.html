@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>blogs</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+	crossorigin="anonymous" />
+<!-- <link rel="stylesheet" href="check.css" /> -->
+</head>
+<body>
+	<nav class="nav-header-main">
+		<div class="header-login">
+			<form action="login" method="post">
+				<button type="submit" name="login">Login</button>
+			</form>
+			<form action="signUp" method="post">
+				<button type="submit" name="signUp">SignUp</button>
+			</form>
+			<form th:action="@{/createblog}" method="post">
+				<button type="submit" name="writeBlog">create Blog</button>
+			</form>
+		</div>
+	</nav>
+
+
+	<form class="example" action="#" th:action="@{/search}"
+		style="margin: auto; max-width: 300px">
+		<input type="text" placeholder="Search.." name="search" />
+		<button type="submit">Enter</button>
+	</form>
+	<br>
+	<!-- filtering by author, tags and datetime; -->
+
+
+	<div class="dropdown">
+		<button>filter by author</button>
+		<div class="dropdown-content">
+			<form th:action="@{/filterby/authors}">
+				<span th:each="author: ${author}"><input type="checkbox"
+					id="vehicle1" name="author" th:value="${author}"
+					th:text="${author}"><br></span> <label for="vehicle1"></label><br>
+				<input type="submit" value="Submit">
+			</form>
+
+
+		</div>
+	</div>
+
+	<div class="dropdown">
+		<button>filter by tags</button>
+		<div class="dropdown-content">
+			<form th:action="@{/filterby/tags}">
+				<span th:each="author: ${allTags}"><input type="checkbox"
+					id="vehicle1" name="tags" th:value="${author}" th:text="${author}"><br></span>
+				<label for="vehicle1"></label><br> <input type="submit"
+					value="Submit">
+			</form>
+
+
+		</div>
+	</div>
+	<div class="dropdown">
+		<button>filter by dateTime</button>
+		<div class="dropdown-content">
+			<form th:action="@{/filterby/dateTime}">
+				<span th:each="author: ${allDateTime}"><input type="checkbox"
+					id="vehicle1" name="dateTime" th:value="${author}"
+					th:text="${author}"><br></span> <label for="vehicle1"></label><br>
+				<input type="submit" value="Submit">
+			</form>
+
+
+		</div>
+	</div>
+	<br>
+	<br>
+	<span><h3>sortby DateTime</h3></span>
+	<a th:href="@{/sortby}"> DateTime </a>
+	<center>
+		<h1>Blog</h1>
+	</center>
+	<table class="table table-bordered">
+		<thead></thead>
+		<tbody>
+			<tr th:each="postData: ${postData}">
+				<td>
+					<p th:text="${postData.getId()}" />
+					<h1 th:text="${postData.getTitle()}"></h1>
+					<p th:text="${postData.getExcerpt()}" />
+					<div style="display: flex;">
+						<p th:text="tags+':'" />
+						<p style="margin: 5px;" th:each="tags : ${postData.getTags()}"
+							th:text="${tags.getName()} " />
+					</div>
+					<p th:text=" 'Author:  '+ ${postData.getAuthor()}" />
+					<p th:text=" 'PublishedAt: '+ ${postData.getPublishAt()}" />
+					<form th:action="@{/fullarticle/{id}(id=${postData.getId()})}"
+						method="get">
+						<button>Read Full Article</button>
+					</form>
+
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	
+<!-- 	 	<nav aria-label="Page navigation example">
+		<ul class="pagination">
+			<li th:if="${currentPage !=0}" class="page-item"><a
+				class="page-link"
+				th:href="@{/pageno/{page}(page = ${currentPage-1})}">Previous</a></li>
+			<li th:classappend="${currentPage==i-1?'active':''}"
+				th:each="i : ${#numbers.sequence(1,totalPages)}" class="page-item"><a
+				class="page-link" th:href="@{/pageno/{page}(page = ${i-1})}"><span
+					name="shashi" th:value="${i-1}" th:text="${i}"></span></a></li>
+			<li th:if="${currentPage+1 !=totalPages}" class="page-item"><a
+				class="page-link"
+				th:href="@{/pageno/{page}(page = ${currentPage+1})}">Next</a></li>
+		</ul>
+	</nav>  
+	 -->
+
+
+	<style>
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f9f9f9;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	padding: 12px 16px;
+	z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+</style>
+
+</body>
+</html>

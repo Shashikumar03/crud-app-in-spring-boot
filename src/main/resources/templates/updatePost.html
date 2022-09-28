@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>blog</title>
+   
+</head>
+
+<body>
+ 
+    <form action="#" th:action="@{/updating/{id}(id = ${posts.getId()})}"  method ="post">
+        <div class="container">
+            <h1 class="main_heading">Blog post</h1>
+            <hr>
+            <p> title
+                <input type="text" th:value="${posts.getTitle()}" required name="title" placeholder=" title of blog">
+            </p>
+            <p> excerpt
+                <input type="text" th:value="${posts.getExcerpt()}" required name="excerpt" placeholder="excerpt">
+            </p>
+            <p><label for="content"> Write content:</label></p>
+            <textarea id="content" th:text="${posts.getContent()}" placeholder="write blogs" name="content" rows="10" cols="60"></textarea>
+            <br>
+            <p>
+                author:
+                <input type="text" th:value="${posts.getAuthor()}" required name="author" placeholder="author name">
+            </p>
+            
+           
+            <p>
+                is published:
+                <input type="checkbox" name="isPublished" value="true" th:checked="${posts.getIsPublished()}">
+                
+            </p>
+                       
+
+            <h2>choose tags</h2>
+            <p>
+                tags
+                <input style="margin: 5px;" type="text" th:value="${posts.getTagsToString()}" required name="name" >
+               
+            </p>
+
+            <p class="pay">
+                <button name="button" >update post</button>
+            </p>
+        </div>
+    </form>
+
+
+</body>
+
+</html>

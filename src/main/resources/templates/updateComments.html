@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>Edit your ggggComments</h1>
+	<div>
+	<br>
+	<form action="#" th:action="@{/update/comment/{id}(id=${comments.getId()})}" method="post">
+	Comments:
+		<input type="text" th:value="${comments.getComment()}" name="comments">
+		<br> 
+		Name:
+		<input type="text" th:value="${comments.getName()}" name="name"><br>
+		Email:
+		<input type="text" th:value="${comments.getEmail()}" name="email">
+		<br>
+		
+		<button name="button" >Update</button>
+		
+		</form>
+		
+	</div>
+
+</body>
+</html>

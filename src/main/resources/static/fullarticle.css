@@ -1,0 +1,71 @@
+* {
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+body {
+
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: 15px 30px;
+    font-size: 20px;
+    padding: 8px;
+
+
+}
+.main-container{
+    padding: 10px;
+    text-align: center;
+    border: 2px solid blue;
+    width:50%
+    
+    
+
+}
+input[type="text"],
+input[type="text"],
+input[type="email"] {
+    padding: 10px;
+    background-color:white;
+    size: 20px;
+    margin: 20px 2px 2px 20px ;
+    border: 2px solid black;
+    border-radius: 5px;
+
+}
+button {
+
+    background-color: rgb(180, 246, 144);
+    color: rgb(17, 1, 1);
+    text-align: center;
+    margin-top: 15px;
+    padding: 5px 8px;
+    border: none;
+    cursor: pointer;
+}
+button:hover{
+    background-color: blue;
+}
+
+.main-commentsContainer{
+    text-align: center;
+    border: 2px solid lightblue;
+    width: 40vw;
+    margin: auto;
+}
+#delete ,#update{
+    background-color: lightblue;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    
+}
+#comment{
+    font-size: 20px;
+}
+#delete:hover{
+    background-color: red;
+
+}
+#update:hover{
+    background-color: blue;
+}
