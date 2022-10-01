@@ -39,14 +39,19 @@ public class PostController {
 	@PostMapping("/newblog")
 	public String createBlog(HttpServletRequest request, Model model) {
 		Post post = new Post();
-		post.setTitle(request.getParameter("title"));
-		post.setExcerpt(request.getParameter("excerpt"));
-		post.setContent(request.getParameter("content"));
-		post.setAuthor(request.getParameter("author"));
-	      (boolean)request.getParameter("isPublished");
+		post.setTitle(request.getParameter("title").trim());
+		post.setExcerpt(request.getParameter("excerpt").trim());
+		post.setContent(request.getParameter("content").trim());
+		post.setAuthor(request.getParameter("author").trim());
 		post.setCreateAt(LocalDateTime.now());
 		post.setPublishAt(LocalDateTime.now());
 		post.setUpdateAt(LocalDateTime.now());
+		if(request.getParameter("isPublished")!=null) {
+			post.setPublished(true);
+		}
+		else {
+			post.setPublished(false);
+		}
 		List<Tag> tagsList = new ArrayList<>();
 		String[] tagsArray = request.getParameter("name").split(" ");
 		for (String allTags : tagsArray) {
@@ -54,8 +59,8 @@ public class PostController {
 				if (!tagsRepository.existsByName(allTags)) {
 					Tag tags = new Tag();
 					tags.setName(allTags.trim());
-					tags.setCreateAt(LocalDateTime.now().toString());
-					tags.setUpdateAt(LocalDateTime.now().toString());
+					tags.setCreateAt(LocalDateTime.now());
+					tags.setUpdateAt(LocalDateTime.now());
 					tagsList.add(tags);
 					tagsRepository.save(tags);
 				} else {
@@ -84,7 +89,10 @@ public class PostController {
 	@PostMapping("/fullarticle/{id}/update")
 	public String updatePost(@PathVariable String id, Model model) {
 		int postId = Integer.parseInt(id);
+		System.out.println("dddd");
 		Post posts = postsRepository.findById(postId);
+		boolean published = posts.isPublished();
+		System.out.println(published);
 		model.addAttribute("posts", posts);
 		return "updatePost";
 	}
@@ -96,7 +104,7 @@ public class PostController {
 		posts.setExcerpt(request.getParameter("excerpt").trim());
 		posts.setContent(request.getParameter("content").trim());
 		posts.setAuthor(request.getParameter("author").trim());
-		posts.setPublished(request.getParameter("isPublished").);
+		posts.setPublished(request.getParameter("isPublished")=="true");
 		posts.setCreateAt(LocalDateTime.now());
 		posts.setPublishAt(LocalDateTime.now());
 		posts.setUpdateAt(LocalDateTime.now());
@@ -107,8 +115,8 @@ public class PostController {
 				if (!tagsRepository.existsByName(allTags)) {
 					Tag tags = new Tag();
 					tags.setName(allTags.trim());
-					tags.setCreateAt(LocalDateTime.now().toString());
-					tags.setUpdateAt(LocalDateTime.now().toString());
+					tags.setCreateAt(LocalDateTime.now());
+					tags.setUpdateAt(LocalDateTime.now());
 					tagsList.add(tags);
 					tagsRepository.save(tags);
 				} else {
@@ -119,7 +127,6 @@ public class PostController {
 				}
 			}
 		}
-
 		posts.setTags(tagsList);
 		postsRepository.save(posts);
 		return "redirect:/fullarticle/{id}";

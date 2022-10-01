@@ -11,14 +11,14 @@
 
 <body>
  
-    <form action="#" th:action="@{/updating/{id}(id = ${posts.getId()})}"  method ="post">
+     <form action="#" th:action="@{/updating/{id}(id = ${posts.getId()})}"  method ="post">
         <div class="container">
             <h1 class="main_heading">Blog post</h1>
             <hr>
             <p> title
                 <input type="text" th:value="${posts.getTitle()}" required name="title" placeholder=" title of blog">
             </p>
-            <p> excerpt
+             <p> excerpt
                 <input type="text" th:value="${posts.getExcerpt()}" required name="excerpt" placeholder="excerpt">
             </p>
             <p><label for="content"> Write content:</label></p>
@@ -32,7 +32,7 @@
            
             <p>
                 is published:
-                <input type="checkbox" name="isPublished" value="true" th:checked="${posts.getIsPublished()}">
+                <input type="checkbox" name="isPublished" th:value="true" th:checked="${posts.isPublished()}">
                 
             </p>
                        

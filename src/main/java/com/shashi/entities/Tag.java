@@ -1,5 +1,6 @@
 package com.shashi.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,8 +16,8 @@ public class Tag {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 	private String name;
-	private String createAt;
-	private String updateAt;
+	private LocalDateTime createAt;
+	private LocalDateTime updateAt;
 
 	@ManyToMany(mappedBy = "tags")
 	private List<Post> post;
@@ -37,19 +38,19 @@ public class Tag {
 		this.name = name;
 	}
 
-	public String getCreateAt() {
+	public LocalDateTime getCreateAt() {
 		return createAt;
 	}
 
-	public void setCreateAt(String createAt) {
+	public void setCreateAt(LocalDateTime createAt) {
 		this.createAt = createAt;
 	}
 
-	public String getUpdateAt() {
+	public LocalDateTime getUpdateAt() {
 		return updateAt;
 	}
 
-	public void setUpdateAt(String updateAt) {
+	public void setUpdateAt(LocalDateTime updateAt) {
 		this.updateAt = updateAt;
 	}
 
@@ -63,8 +64,10 @@ public class Tag {
 
 	@Override
 	public String toString() {
-		return "Tags [id=" + id + ", name=" + name + ", createAt=" + createAt + ", updateAt=" + updateAt + ", post="
+		return "Tag [id=" + id + ", name=" + name + ", createAt=" + createAt + ", updateAt=" + updateAt + ", post="
 				+ post + "]";
 	}
+
+  
 
 }

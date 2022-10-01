@@ -31,10 +31,21 @@ public interface PostsRepository extends CrudRepository<Post, Integer> {
 	public List<Post> findAllByTagsName(String name);
 
 	public List<Post> findByOrderByPublishAtAsc();
+	
+	public List<Post> findAllByAuthorOrTagsNameOrPublishAt(String name, String tags, String dateTime);
 
-	@Query(value = "SELECT * FROM posts p WHERE LOWER(p.author) LIKE LOWER(CONCAT(?1))"
-			+ " or LOWER(p.title) LIKE LOWER(CONCAT(?1)) "
-			+ "or LOWER(p.content) LIKE LOWER(CONCAT(?1)) ", nativeQuery = true)
+	/*
+	 * @Query(value =
+	 * "SELECT * FROM posts p WHERE LOWER(p.author) LIKE LOWER(CONCAT(?1))" +
+	 * " or LOWER(p.title) LIKE LOWER(CONCAT(?1)) " +
+	 * "or LOWER(p.content) LIKE LOWER(CONCAT(?1)) ", nativeQuery = true)
+	 */
+	@Query("select post from Post post join post.tags tag " +
+            "where (post.isPublished = true) and " +
+            "upper(tag.name) like concat('%', upper(?1), '%') " +
+            "or upper(post.title) like concat('%', upper(?1), '%') " +
+            "or upper(post.content) like concat('%', upper(?1), '%') " +
+            "or upper(post.author) like concat('%', upper(?1), '%') group by  post.id")
 	public List<Post> searchBy(String title);
 
 	Page<Post> findAll(Pageable pageable);

@@ -13,6 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+
+
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -25,12 +29,24 @@ public class Post {
 	private String excerpt;
 	private String content;
 	private String author;
-	private LocalDateTime publishAt;
 	private boolean isPublished;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private LocalDateTime publishAt;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime createAt;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime updateAt;
 	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.REFRESH,CascadeType.PERSIST})
 	private List<Tag> tags;
+	
+	public String getTagsToString() {
+		String tag = "";
+		for (Tag t : tags) {
+			tag += t.getName() + " ";
+		}
+		return tag;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -96,5 +112,6 @@ public class Post {
 		return "Post [id=" + id + ", title=" + title + ", excerpt=" + excerpt + ", content=" + content + ", author="
 				+ author + ", publishAt=" + publishAt + ", isPublished=" + isPublished + ", createAt=" + createAt
 				+ ", updateAt=" + updateAt + ", tags=" + tags + "]";
-	}	
+	}
+   
 }

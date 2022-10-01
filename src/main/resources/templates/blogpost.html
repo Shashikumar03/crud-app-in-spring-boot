@@ -35,11 +35,16 @@
 	<!-- filtering by author, tags and datetime; -->
 <br>
 	<div class="dropdown">
-		<button>filter by author</button>
+		<button>filter by</button>
 		<div class="dropdown-content">
 			<form th:action="@{/filterby/authors}" >
+			<span><h3>author</h3></span><br>
 				<span  th:each="author: ${author}" ><input type="checkbox" id="vehicle1" name="author" th:value="${author}" th:text="${author}"><br></span>
-				<label for="vehicle1" ></label><br> 
+				<span><h3>tags</h3></span><br>
+				<span  th:each="tag: ${allTags}" ><input type="checkbox" id="vehicle1" name="tags" th:value="${tag}" th:text="${tag}"><br></span>
+				<span><h3>DateTime</h3></span><br>
+<!-- 				<span  th:each="dateTime: ${allDateTime}" ><input type="checkbox" id="vehicle1" name="dateTime" th:value="${dateTime}" th:text="${dateTime}"><br></span>
+				<label for="vehicle1" ></label><br>  -->
 				<input type="submit" value="Submit">
 			</form>
 
@@ -47,11 +52,11 @@
 		</div>
 	</div>
 	
-	<div class="dropdown">
+<!-- 	<div class="dropdown">
 		<button>filter by tags</button>
 		<div class="dropdown-content">
 			<form th:action="@{/filterby/tags}" >
-				<span  th:each="author: ${alltags}" ><input type="checkbox" id="vehicle1" name="tags" th:value="${author}" th:text="${author}"><br></span>
+				<span  th:each="tag: ${alltags}" ><input type="checkbox" id="vehicle1" name="tags" th:value="${tag}" th:text="${tag}"><br></span>
 				<label for="vehicle1" ></label><br> 
 				<input type="submit" value="Submit">
 			</form>
@@ -63,14 +68,14 @@
 		<button>filter by dateTime</button>
 		<div class="dropdown-content">
 			<form th:action="@{/filterby/dateTime}" >
-				<span  th:each="author: ${allDateTime}" ><input type="checkbox" id="vehicle1" name="dateTime" th:value="${author}" th:text="${author}"><br></span>
+				<span  th:each="dateTime: ${allDateTime}" ><input type="checkbox" id="vehicle1" name="dateTime" th:value="${dateTime}" th:text="${dateTime}"><br></span>
 				<label for="vehicle1" ></label><br> 
 				<input type="submit" value="Submit">
 			</form>
 
 
 		</div>
-	</div>
+	</div> -->
 	<br>
 	<br>
 	<span><h3> sortby DateTime</h3></span>
