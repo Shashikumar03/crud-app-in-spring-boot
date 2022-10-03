@@ -27,6 +27,7 @@ import com.shashi.repository.CommentsRepository;
 import com.shashi.repository.PostsRepository;
 import com.shashi.repository.TagsRepository;
 import com.shashi.repository.UserRepository;
+import com.shashi.service.PostService;
 
 @Controller
 public class MainController {
@@ -34,35 +35,38 @@ public class MainController {
 	@Autowired
 	UserRepository userRepository;
 	@Autowired
-	PostsRepository postsRepository;
+	PostService postService;
+//	
+//	@Autowired
+//	PostsRepository postsRepository;
 	@Autowired
 	TagsRepository tagsRepository;
 	@Autowired
 	CommentsRepository commentsRepository;
+	String searchName="";
 
 	@RequestMapping("/")
 	public String blogs(@RequestParam(value = "start", defaultValue = "0") Integer start,
-			@RequestParam(value = "limit", defaultValue = "5") Integer limit, Model model) {
-		Page<Post> posts = postsRepository.findAll(PageRequest.of(start, limit));
-		List<String> allAuthors = postsRepository.findAllAuthor();
+			@RequestParam(value = "limit", defaultValue = "3") Integer limit, Model model) {
+//		Page<Post> posts = postsRepository.findAll(PageRequest.of(start, limit));
+		Page<Post> posts = postService.getAllPost(PageRequest.of(start, limit));
+		List<String> allAuthors = postService.getAllAuthor();
 		List<String> allTags = tagsRepository.findAllTags();
-		List<String> allDateAndTime = postsRepository.findAllDataAndTime();
-		for (Post p : posts) {
-			p.getPublishAt();
-		}
+		List<String> allDateTime = postService.getAllDateTime();
+
 		model.addAttribute("author", allAuthors);
 		model.addAttribute("allTags", allTags);
-		model.addAttribute("allDateTime", allDateAndTime);
+		model.addAttribute("allDateTime", allDateTime);
 		model.addAttribute("currentPage", start);
-		model.addAttribute("postData", posts);
 		model.addAttribute("limit", limit);
 		model.addAttribute("totalPages", posts.getTotalPages());
+		model.addAttribute("postData", posts);
 		return "blogpost";
 	}
 
 	@GetMapping("/fullarticle/{id}")
 	public String fullArticle(@PathVariable("id") int postId, Model model) {
-		Post postList = postsRepository.findById(postId);
+		Post postList = postService.getPostById(postId);
 		Iterable<Comment> allComments = commentsRepository.findCommentsById(postId);
 		model.addAttribute("id", postId);
 		model.addAttribute("postList", postList);
@@ -75,13 +79,13 @@ public class MainController {
 		System.out.println("sahi hai");
 		ArrayList<Post> allPostByAuthor = new ArrayList<>();
 		for (String nameOfAuthor : author) {
-              List<Post> findAllByAuthor = postsRepository.findAllByAuthor(nameOfAuthor);
-              allPostByAuthor.addAll(findAllByAuthor);
+             List<Post> allByAuthor = postService.getAllByAuthors(nameOfAuthor);
+              allPostByAuthor.addAll(allByAuthor);
 		}
 	
-		List<String> allAuthors = postsRepository.findAllAuthor();
+		List<String> allAuthors = postService.getAllAuthor();
 		List<String> allTags = tagsRepository.findAllTags();
-		List<String> allDateAndTime = postsRepository.findAllDataAndTime();
+		List<String> allDateAndTime = postService.getAllDateTime();
 		model.addAttribute("allDateTime", allDateAndTime);
 		model.addAttribute("author", allAuthors);
 		model.addAttribute("allTags", allTags);
@@ -93,12 +97,12 @@ public class MainController {
 	public String filterByTags(@RequestParam(value = "tags", required = false) String[] tags, Model model) {
 		ArrayList<Post> allPostByTags = new ArrayList<>();
 		for (String tag : tags) {
-			List<Post> postByTag = postsRepository.findAllByTagsName(tag);
+			List<Post> postByTag = postService.getPostByTagsName(tag);
 			allPostByTags.addAll(postByTag);
 		}
-		List<String> allAuthors = postsRepository.findAllAuthor();
+		List<String> allAuthors = postService.getAllAuthor();
 		List<String> allTags = tagsRepository.findAllTags();
-		List<String> allDateAndTime = postsRepository.findAllDataAndTime();
+		List<String> allDateAndTime = postService.getAllDateTime();
 		model.addAttribute("allDateTime", allDateAndTime);
 		model.addAttribute("author", allAuthors);
 		model.addAttribute("allTags", allTags);
@@ -111,12 +115,12 @@ public class MainController {
 			Model model) {
 		ArrayList<Post> allPostByDateTime = new ArrayList<>();
 		for (String date : dateTime) {
-			List<Post> postByDateTime = postsRepository.findByPublishAt(date);
+			List<Post> postByDateTime = postService.getPostByDateTime(date);
 			allPostByDateTime.addAll(postByDateTime);
 		}
-		List<String> allAuthors = postsRepository.findAllAuthor();
+		List<String> allAuthors =  postService.getAllAuthor();
 		List<String> allTags = tagsRepository.findAllTags();
-		List<String> allDateAndTime = postsRepository.findAllDataAndTime();
+		List<String> allDateAndTime = postService.getAllDateTime();
 		model.addAttribute("allDateTime", allDateAndTime);
 		model.addAttribute("author", allAuthors);
 		model.addAttribute("allTags", allTags);
@@ -126,10 +130,10 @@ public class MainController {
 
 	@GetMapping("/sortby")
 	public String sortByDateTime(Model model) {
-		List<Post> sortedPosts = postsRepository.findByOrderByPublishAtAsc();
-		List<String> allAuthors = postsRepository.findAllAuthor();
+		List<Post> sortedPosts = postService.getPostSortedByDateTime();
+		List<String> allAuthors = postService.getAllAuthor();
 		List<String> allTags = tagsRepository.findAllTags();
-		List<String> allDateAndTime = postsRepository.findAllDataAndTime();
+		List<String> allDateAndTime = postService.getAllDateTime();
 		model.addAttribute("allDateTime", allDateAndTime);
 		model.addAttribute("author", allAuthors);
 		model.addAttribute("allTags", allTags);
@@ -138,17 +142,27 @@ public class MainController {
 	}
 
 	@GetMapping("/search")
-	public String search(HttpServletRequest request, Model model) {
-
-		List<Post> searchBy = postsRepository.searchBy(request.getParameter("search").trim());
-		model.addAttribute("postData", searchBy);
-		List<String> allAuthors = postsRepository.findAllAuthor();
+	public String search(@RequestParam(value = "start", defaultValue = "0") Integer start,
+			@RequestParam(value = "limit", defaultValue = "3") Integer limit, HttpServletRequest request, Model model) {
+        if(start==0 && request.getParameter("search")!=null || request.getParameter("search")!=null) {
+        	searchName=request.getParameter("search").trim();	
+        }
+		
+//		Page<Post> searchBy = postsRepository.searchBy(searchName, PageRequest.of(start, limit));
+		Page<Post> postSearchByArg = postService.getPostSearchByArg(searchName,PageRequest.of(start, limit));
+		
+		List<String> allAuthors = postService.getAllAuthor();
 		List<String> allTags = tagsRepository.findAllTags();
-		List<String> allDateAndTime = postsRepository.findAllDataAndTime();
+		List<String> allDateAndTime = postService.getAllDateTime();
+		
+		model.addAttribute("currentPage", start);
+		model.addAttribute("limit", limit);
+		model.addAttribute("totalPages", postSearchByArg.getTotalPages());
 		model.addAttribute("allDateTime", allDateAndTime);
 		model.addAttribute("author", allAuthors);
 		model.addAttribute("allTags", allTags);
-		return "filterview/display";
+		model.addAttribute("postData", postSearchByArg);
+		return "filterview/searchdisplay";
 	}
 
 }

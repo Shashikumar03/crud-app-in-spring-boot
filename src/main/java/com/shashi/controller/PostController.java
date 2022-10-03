@@ -2,7 +2,6 @@ package com.shashi.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,14 +18,21 @@ import com.shashi.repository.CommentsRepository;
 import com.shashi.repository.PostsRepository;
 import com.shashi.repository.TagsRepository;
 import com.shashi.repository.UserRepository;
+import com.shashi.service.PostService;
 
 @Controller
 public class PostController {
 
 	@Autowired
-	UserRepository userRepository;
+	PostService postService;
+
 	@Autowired
-	PostsRepository postsRepository;
+	UserRepository userRepository;
+	
+	
+//	  @Autowired PostsRepository postsRepository;
+
+	
 	@Autowired
 	TagsRepository tagsRepository;
 	@Autowired
@@ -72,7 +78,7 @@ public class PostController {
 			}
 		}
 		post.setTags(tagsList);
-		postsRepository.save(post);
+		postService.savePost(post);
 		return "redirect:/";
 	}
 
@@ -82,24 +88,22 @@ public class PostController {
 		for (Comment comment : commentsById) {
 			commentsRepository.deleteById(comment.getId());
 		}
-		postsRepository.deleteById(id);
+		 postService.deleteById(id);
 		return "redirect:/";
 	}
 
 	@PostMapping("/fullarticle/{id}/update")
-	public String updatePost(@PathVariable String id, Model model) {
-		int postId = Integer.parseInt(id);
+	public String updatePost(@PathVariable int id, Model model) {
+		
 		System.out.println("dddd");
-		Post posts = postsRepository.findById(postId);
-		boolean published = posts.isPublished();
-		System.out.println(published);
+		Post posts = postService.getPostById(id);
 		model.addAttribute("posts", posts);
 		return "updatePost";
 	}
 
 	@PostMapping("/updating/{id}")
 	public String updating(@PathVariable int id, HttpServletRequest request, Model model) {
-		Post posts = postsRepository.findById(id);
+		Post posts = postService.getPostById(id);
 		posts.setTitle(request.getParameter("title").trim());
 		posts.setExcerpt(request.getParameter("excerpt").trim());
 		posts.setContent(request.getParameter("content").trim());
@@ -129,7 +133,7 @@ public class PostController {
 			}
 		}
 		posts.setTags(tagsList);
-		postsRepository.save(posts);
+		postService.savePost(posts);
 		return "redirect:/fullarticle/{id}";
 	}
 

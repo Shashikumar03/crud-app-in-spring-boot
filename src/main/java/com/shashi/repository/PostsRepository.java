@@ -47,7 +47,7 @@ public interface PostsRepository extends CrudRepository<Post, Integer> {
             "or upper(post.title) like concat('%', upper(?1), '%') " +
             "or upper(post.content) like concat('%', upper(?1), '%') " +
             "or upper(post.author) like concat('%', upper(?1), '%') group by  post.id")
-	public List<Post> searchBy(String title);
+	public Page<Post> searchBy(String title, Pageable pageable);
 
 	Page<Post> findAll(Pageable pageable);
 }
