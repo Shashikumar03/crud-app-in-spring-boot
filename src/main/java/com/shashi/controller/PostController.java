@@ -2,6 +2,7 @@ package com.shashi.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,13 +44,12 @@ public class PostController {
 		post.setExcerpt(request.getParameter("excerpt").trim());
 		post.setContent(request.getParameter("content").trim());
 		post.setAuthor(request.getParameter("author").trim());
-		post.setCreateAt(LocalDateTime.now());
-		post.setPublishAt(LocalDateTime.now());
-		post.setUpdateAt(LocalDateTime.now());
-		if(request.getParameter("isPublished")!=null) {
+		post.setCreateAt(LocalDateTime.now().toString());
+		post.setUpdateAt(LocalDateTime.now().toString());
+		post.setPublishAt(LocalDateTime.now().toString());
+		if (request.getParameter("isPublished") != null) {
 			post.setPublished(true);
-		}
-		else {
+		} else {
 			post.setPublished(false);
 		}
 		List<Tag> tagsList = new ArrayList<>();
@@ -104,10 +104,11 @@ public class PostController {
 		posts.setExcerpt(request.getParameter("excerpt").trim());
 		posts.setContent(request.getParameter("content").trim());
 		posts.setAuthor(request.getParameter("author").trim());
-		posts.setPublished(request.getParameter("isPublished")=="true");
-		posts.setCreateAt(LocalDateTime.now());
-		posts.setPublishAt(LocalDateTime.now());
-		posts.setUpdateAt(LocalDateTime.now());
+		posts.setPublished(request.getParameter("isPublished") == "true");
+
+		posts.setCreateAt(LocalDateTime.now().toString());
+		posts.setUpdateAt(LocalDateTime.now().toString());
+		posts.setPublishAt(LocalDateTime.now().toString());
 		List<Tag> tagsList = new ArrayList<>();
 		String[] tagsArray = request.getParameter("name").split(" ");
 		for (String allTags : tagsArray) {

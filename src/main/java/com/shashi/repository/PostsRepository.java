@@ -16,17 +16,18 @@ public interface PostsRepository extends CrudRepository<Post, Integer> {
 	@Query(value = "select author from posts group by author", nativeQuery = true)
 	public List<String> findAllAuthor();
 
-	@Query(value = "select publish_at from posts group by publish_at", nativeQuery = true)
-	public List<String> findAllDataAndTime();
+	@Query(value = "select publish_at from posts", nativeQuery = true)
+     public   List<String> findAllDataAndTime();
 
 	public List<Post> findByAuthor(String author);
 
-	@Query(value = "Select * from posts where id = ?1", nativeQuery = true)
+	
 	public Post findById(int id);
 
 	public List<Post> findAllByAuthor(String author);
 
-	public List<Post> findByPublishAt(LocalDateTime dataAndTime);
+
+	public List<Post> findByPublishAt(String dataAndTime);
 
 	public List<Post> findAllByTagsName(String name);
 

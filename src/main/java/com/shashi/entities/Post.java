@@ -13,10 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
-
-
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -29,13 +25,10 @@ public class Post {
 	private String excerpt;
 	private String content;
 	private String author;
+	private String publishAt;
 	private boolean isPublished;
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime publishAt;
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime createAt;
-	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-	private LocalDateTime updateAt;
+	private String createAt;
+	private String updateAt;
 	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE,CascadeType.REFRESH,CascadeType.PERSIST})
 	private List<Tag> tags;
 	
@@ -50,68 +43,90 @@ public class Post {
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 	public String getExcerpt() {
 		return excerpt;
 	}
+
 	public void setExcerpt(String excerpt) {
 		this.excerpt = excerpt;
 	}
+
 	public String getContent() {
 		return content;
 	}
+
 	public void setContent(String content) {
 		this.content = content;
 	}
+
 	public String getAuthor() {
 		return author;
 	}
+
 	public void setAuthor(String author) {
 		this.author = author;
 	}
-	public LocalDateTime getPublishAt() {
+
+	public String getPublishAt() {
 		return publishAt;
 	}
-	public void setPublishAt(LocalDateTime publishAt) {
+
+	public void setPublishAt(String publishAt) {
 		this.publishAt = publishAt;
 	}
+
 	public boolean isPublished() {
 		return isPublished;
 	}
+
 	public void setPublished(boolean isPublished) {
 		this.isPublished = isPublished;
 	}
-	public LocalDateTime getCreateAt() {
+
+	public String getCreateAt() {
 		return createAt;
 	}
-	public void setCreateAt(LocalDateTime createAt) {
+
+	public void setCreateAt(String createAt) {
 		this.createAt = createAt;
 	}
-	public LocalDateTime getUpdateAt() {
+
+	public String getUpdateAt() {
 		return updateAt;
 	}
-	public void setUpdateAt(LocalDateTime updateAt) {
+
+	public void setUpdateAt(String updateAt) {
 		this.updateAt = updateAt;
 	}
+
 	public List<Tag> getTags() {
 		return tags;
 	}
+
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
+
 	@Override
 	public String toString() {
 		return "Post [id=" + id + ", title=" + title + ", excerpt=" + excerpt + ", content=" + content + ", author="
 				+ author + ", publishAt=" + publishAt + ", isPublished=" + isPublished + ", createAt=" + createAt
 				+ ", updateAt=" + updateAt + ", tags=" + tags + "]";
 	}
+
+
    
 }

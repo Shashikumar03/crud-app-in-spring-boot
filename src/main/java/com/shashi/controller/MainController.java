@@ -75,7 +75,8 @@ public class MainController {
 		System.out.println("sahi hai");
 		ArrayList<Post> allPostByAuthor = new ArrayList<>();
 		for (String nameOfAuthor : author) {
-               postsRepository.findAllByAuthorOrTagsNameOrPublishAt(nameOfAuthor, nameOfAuthor, nameOfAuthor);
+              List<Post> findAllByAuthor = postsRepository.findAllByAuthor(nameOfAuthor);
+              allPostByAuthor.addAll(findAllByAuthor);
 		}
 	
 		List<String> allAuthors = postsRepository.findAllAuthor();
@@ -88,40 +89,40 @@ public class MainController {
 		return "filterview/display";
 	}
 
-//	@GetMapping("/filterby/tags")
-//	public String filterByTags(@RequestParam(value = "tags", required = false) String[] tags, Model model) {
-//		ArrayList<Post> allPostByTags = new ArrayList<>();
-//		for (String tag : tags) {
-//			List<Post> postByTag = postsRepository.findAllByTagsName(tag);
-//			allPostByTags.addAll(postByTag);
-//		}
-//		List<String> allAuthors = postsRepository.findAllAuthor();
-//		List<String> allTags = tagsRepository.findAllTags();
-//		List<String> allDateAndTime = postsRepository.findAllDataAndTime();
-//		model.addAttribute("allDateTime", allDateAndTime);
-//		model.addAttribute("author", allAuthors);
-//		model.addAttribute("allTags", allTags);
-//		model.addAttribute("postData", allPostByTags);
-//		return "filterview/display";
-//	}
+	@GetMapping("/filterby/tags")
+	public String filterByTags(@RequestParam(value = "tags", required = false) String[] tags, Model model) {
+		ArrayList<Post> allPostByTags = new ArrayList<>();
+		for (String tag : tags) {
+			List<Post> postByTag = postsRepository.findAllByTagsName(tag);
+			allPostByTags.addAll(postByTag);
+		}
+		List<String> allAuthors = postsRepository.findAllAuthor();
+		List<String> allTags = tagsRepository.findAllTags();
+		List<String> allDateAndTime = postsRepository.findAllDataAndTime();
+		model.addAttribute("allDateTime", allDateAndTime);
+		model.addAttribute("author", allAuthors);
+		model.addAttribute("allTags", allTags);
+		model.addAttribute("postData", allPostByTags);
+		return "filterview/display";
+	}
 
-//	@GetMapping("/filterby/dateTime")
-//	public String filterByDateTime(@RequestParam(value = "dateTime", required = false) List<LocalDateTime> dateTime,
-//			Model model) {
-//		ArrayList<Post> allPostByDateTime = new ArrayList<>();
-//		for (LocalDateTime date : dateTime) {
-//			List<Post> postByDateTime = postsRepository.findByPublishAt(date);
-//			allPostByDateTime.addAll(postByDateTime);
-//		}
-//		List<String> allAuthors = postsRepository.findAllAuthor();
-//		List<String> allTags = tagsRepository.findAllTags();
-//		List<String> allDateAndTime = postsRepository.findAllDataAndTime();
-//		model.addAttribute("allDateTime", allDateAndTime);
-//		model.addAttribute("author", allAuthors);
-//		model.addAttribute("allTags", allTags);
-//		model.addAttribute("postData", allPostByDateTime);
-//		return "filterview/display";
-//	}
+	@GetMapping("/filterby/dateTime")
+	public String filterByDateTime(@RequestParam(value = "dateTime", required = false) String[] dateTime,
+			Model model) {
+		ArrayList<Post> allPostByDateTime = new ArrayList<>();
+		for (String date : dateTime) {
+			List<Post> postByDateTime = postsRepository.findByPublishAt(date);
+			allPostByDateTime.addAll(postByDateTime);
+		}
+		List<String> allAuthors = postsRepository.findAllAuthor();
+		List<String> allTags = tagsRepository.findAllTags();
+		List<String> allDateAndTime = postsRepository.findAllDataAndTime();
+		model.addAttribute("allDateTime", allDateAndTime);
+		model.addAttribute("author", allAuthors);
+		model.addAttribute("allTags", allTags);
+		model.addAttribute("postData", allPostByDateTime);
+		return "filterview/display";
+	}
 
 	@GetMapping("/sortby")
 	public String sortByDateTime(Model model) {
