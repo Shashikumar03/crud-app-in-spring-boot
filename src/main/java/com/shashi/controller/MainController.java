@@ -2,6 +2,7 @@ package com.shashi.controller;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +10,12 @@ import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,20 +41,21 @@ public class MainController {
 	UserRepository userRepository;
 	@Autowired
 	PostService postService;
-//	
-//	@Autowired
-//	PostsRepository postsRepository;
+
+	@Autowired
+	PostsRepository postsRepository;
 	@Autowired
 	TagsRepository tagsRepository;
 	@Autowired
 	CommentsRepository commentsRepository;
-	String searchName="";
+	String searchName = "";
 
 	@RequestMapping("/")
 	public String blogs(@RequestParam(value = "start", defaultValue = "0") Integer start,
-			@RequestParam(value = "limit", defaultValue = "3") Integer limit, Model model) {
+			@RequestParam(value = "limit", defaultValue = "5") Integer limit, Model model) {
 //		Page<Post> posts = postsRepository.findAll(PageRequest.of(start, limit));
 		Page<Post> posts = postService.getAllPost(PageRequest.of(start, limit));
+
 		List<String> allAuthors = postService.getAllAuthor();
 		List<String> allTags = tagsRepository.findAllTags();
 		List<String> allDateTime = postService.getAllDateTime();
@@ -57,6 +63,7 @@ public class MainController {
 		model.addAttribute("author", allAuthors);
 		model.addAttribute("allTags", allTags);
 		model.addAttribute("allDateTime", allDateTime);
+
 		model.addAttribute("currentPage", start);
 		model.addAttribute("limit", limit);
 		model.addAttribute("totalPages", posts.getTotalPages());
@@ -75,58 +82,59 @@ public class MainController {
 	}
 
 	@GetMapping("/filterby/authors")
-	public String filterByAuthorl(@RequestParam(value = "author", required = false) String[] author, Model model) {
-		System.out.println("sahi hai");
-		ArrayList<Post> allPostByAuthor = new ArrayList<>();
-		for (String nameOfAuthor : author) {
-             List<Post> allByAuthor = postService.getAllByAuthors(nameOfAuthor);
-              allPostByAuthor.addAll(allByAuthor);
-		}
-	
+	public String filterByAuthorl(@RequestParam(value = "author", required = false) String[] author,
+			@RequestParam(value = "tags", required = false) String[] tags,
+			@RequestParam(value = "dateTime", required = false) String[] dateTime, Model model) {
+
+        List<Post> findAllByAuthorArray = postsRepository.findAllByAuthorArray(author);
+        List<Post> findAllByTagsArray = postsRepository.findAllByTagsArray(tags);
+       List<Post> findAllByDateTimeArray = postsRepository.findAllByDateTimeArray(dateTime);     
+       ArrayList< Post>allPost= new ArrayList<>();
+       allPost.addAll(findAllByAuthorArray);
+       allPost.addAll(findAllByTagsArray);
+       allPost.addAll(findAllByDateTimeArray);
+  
+		
 		List<String> allAuthors = postService.getAllAuthor();
 		List<String> allTags = tagsRepository.findAllTags();
 		List<String> allDateAndTime = postService.getAllDateTime();
+
 		model.addAttribute("allDateTime", allDateAndTime);
 		model.addAttribute("author", allAuthors);
 		model.addAttribute("allTags", allTags);
-		model.addAttribute("postData", allPostByAuthor);
+		model.addAttribute("postData", allPost);
 		return "filterview/display";
 	}
 
-	@GetMapping("/filterby/tags")
-	public String filterByTags(@RequestParam(value = "tags", required = false) String[] tags, Model model) {
-		ArrayList<Post> allPostByTags = new ArrayList<>();
-		for (String tag : tags) {
-			List<Post> postByTag = postService.getPostByTagsName(tag);
-			allPostByTags.addAll(postByTag);
-		}
-		List<String> allAuthors = postService.getAllAuthor();
-		List<String> allTags = tagsRepository.findAllTags();
-		List<String> allDateAndTime = postService.getAllDateTime();
-		model.addAttribute("allDateTime", allDateAndTime);
-		model.addAttribute("author", allAuthors);
-		model.addAttribute("allTags", allTags);
-		model.addAttribute("postData", allPostByTags);
-		return "filterview/display";
-	}
-
-	@GetMapping("/filterby/dateTime")
-	public String filterByDateTime(@RequestParam(value = "dateTime", required = false) String[] dateTime,
-			Model model) {
-		ArrayList<Post> allPostByDateTime = new ArrayList<>();
-		for (String date : dateTime) {
-			List<Post> postByDateTime = postService.getPostByDateTime(date);
-			allPostByDateTime.addAll(postByDateTime);
-		}
-		List<String> allAuthors =  postService.getAllAuthor();
-		List<String> allTags = tagsRepository.findAllTags();
-		List<String> allDateAndTime = postService.getAllDateTime();
-		model.addAttribute("allDateTime", allDateAndTime);
-		model.addAttribute("author", allAuthors);
-		model.addAttribute("allTags", allTags);
-		model.addAttribute("postData", allPostByDateTime);
-		return "filterview/display";
-	}
+	/*
+	 * @GetMapping("/filterby/tags") public String filterByTags(@RequestParam(value
+	 * = "tags", required = false) String[] tags, Model model) { ArrayList<Post>
+	 * allPostByTags = new ArrayList<>();
+	 * 
+	 * List<Post> findAllByTagsArray = postsRepository.findAllByTagsArray(tags); //
+	 * for (String tag : tags) { // List<Post> postByTag =
+	 * postService.getPostByTagsName(tag); // allPostByTags.addAll(postByTag); // }
+	 * allPostByTags.addAll(findAllByTagsArray); List<String> allAuthors =
+	 * postService.getAllAuthor(); List<String> allTags =
+	 * tagsRepository.findAllTags(); List<String> allDateAndTime =
+	 * postService.getAllDateTime(); model.addAttribute("allDateTime",
+	 * allDateAndTime); model.addAttribute("author", allAuthors);
+	 * model.addAttribute("allTags", allTags); model.addAttribute("postData",
+	 * allPostByTags); return "filterview/display"; }
+	 * 
+	 * @GetMapping("/filterby/dateTime") public String
+	 * filterByDateTime(@RequestParam(value = "dateTime", required = false) String[]
+	 * dateTime, Model model) { ArrayList<Post> allPostByDateTime = new
+	 * ArrayList<>(); for (String date : dateTime) { List<Post> postByDateTime =
+	 * postService.getPostByDateTime(date);
+	 * allPostByDateTime.addAll(postByDateTime); } List<String> allAuthors =
+	 * postService.getAllAuthor(); List<String> allTags =
+	 * tagsRepository.findAllTags(); List<String> allDateAndTime =
+	 * postService.getAllDateTime(); model.addAttribute("allDateTime",
+	 * allDateAndTime); model.addAttribute("author", allAuthors);
+	 * model.addAttribute("allTags", allTags); model.addAttribute("postData",
+	 * allPostByDateTime); return "filterview/display"; }
+	 */
 
 	@GetMapping("/sortby")
 	public String sortByDateTime(Model model) {
@@ -144,17 +152,15 @@ public class MainController {
 	@GetMapping("/search")
 	public String search(@RequestParam(value = "start", defaultValue = "0") Integer start,
 			@RequestParam(value = "limit", defaultValue = "3") Integer limit, HttpServletRequest request, Model model) {
-        if(start==0 && request.getParameter("search")!=null || request.getParameter("search")!=null) {
-        	searchName=request.getParameter("search").trim();	
-        }
-		
-//		Page<Post> searchBy = postsRepository.searchBy(searchName, PageRequest.of(start, limit));
-		Page<Post> postSearchByArg = postService.getPostSearchByArg(searchName,PageRequest.of(start, limit));
-		
+		if (start == 0 && request.getParameter("search") != null || request.getParameter("search") != null) {
+			searchName = request.getParameter("search").trim();
+		}
+		Page<Post> postSearchByArg = postService.getPostSearchByArg(searchName, PageRequest.of(start, limit));
+
 		List<String> allAuthors = postService.getAllAuthor();
 		List<String> allTags = tagsRepository.findAllTags();
 		List<String> allDateAndTime = postService.getAllDateTime();
-		
+
 		model.addAttribute("currentPage", start);
 		model.addAttribute("limit", limit);
 		model.addAttribute("totalPages", postSearchByArg.getTotalPages());

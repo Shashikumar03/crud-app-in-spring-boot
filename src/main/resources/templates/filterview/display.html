@@ -36,20 +36,23 @@
 
 
 	<div class="dropdown">
-		<button>filter by author</button>
+		<button>filter by</button>
 		<div class="dropdown-content">
-			<form th:action="@{/filterby/authors}">
-				<span th:each="author: ${author}"><input type="checkbox"
-					id="vehicle1" name="author" th:value="${author}"
-					th:text="${author}"><br></span> <label for="vehicle1"></label><br>
+			<form th:action="@{/filterby/authors}" >
+			<span><h3>author</h3></span><br>
+				<span  th:each="author: ${author}" ><input type="checkbox" id="vehicle1" name="author" th:value="${author}" th:text="${author}"><br></span>
+				<span><h3>tags</h3></span><br>
+				 <span  th:each="tag: ${allTags}" ><input type="checkbox" id="vehicle1" name="tags" th:value="${tag}" th:text="${tag}"><br></span>
+				<span><h3>DateTime</h3></span><br>
+				<span  th:each="dateTime: ${allDateTime}" ><input type="checkbox" id="vehicle1" name="dateTime" th:value="${dateTime}" th:text="${dateTime}"><br></span>
+				<label for="vehicle1" ></label><br> 
 				<input type="submit" value="Submit">
 			</form>
-
-
 		</div>
 	</div>
+	
 
-	<div class="dropdown">
+<!-- 	<div class="dropdown">
 		<button>filter by tags</button>
 		<div class="dropdown-content">
 			<form th:action="@{/filterby/tags}">
@@ -74,7 +77,7 @@
 
 
 		</div>
-	</div>
+	</div> -->
 	<br>
 	<br>
 	<span><h3>sortby DateTime</h3></span>
@@ -108,23 +111,23 @@
 	</table>
 
 	
-<!-- 	 	<nav aria-label="Page navigation example">
+
+<!-- pagination -->
+ <!-- 	<nav aria-label="Page navigation example">
 		<ul class="pagination">
 			<li th:if="${currentPage !=0}" class="page-item"><a
 				class="page-link"
-				th:href="@{/pageno/{page}(page = ${currentPage-1})}">Previous</a></li>
+				th:href="@{//filterby/authors(start=${currentPage-1},limit=${limit})}">Previous</a></li>
 			<li th:classappend="${currentPage==i-1?'active':''}"
 				th:each="i : ${#numbers.sequence(1,totalPages)}" class="page-item"><a
-				class="page-link" th:href="@{/pageno/{page}(page = ${i-1})}"><span
+				class="page-link" th:href="@{/filterby/authors(start=${i-1},limit=${limit})}"><span
 					name="shashi" th:value="${i-1}" th:text="${i}"></span></a></li>
 			<li th:if="${currentPage+1 !=totalPages}" class="page-item"><a
 				class="page-link"
-				th:href="@{/pageno/{page}(page = ${currentPage+1})}">Next</a></li>
+				th:href="@{/filterby/authors(start=${currentPage+1},limit=${limit})}">Next</a></li>
 		</ul>
 	</nav>  
-	 -->
-
-
+ -->
 	<style>
 .dropdown {
 	position: relative;

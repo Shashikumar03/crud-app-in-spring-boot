@@ -17,18 +17,23 @@ import com.shashi.repository.CommentsRepository;
 import com.shashi.repository.PostsRepository;
 import com.shashi.repository.TagsRepository;
 import com.shashi.repository.UserRepository;
+import com.shashi.service.PostService;
+import com.shashi.serviceImplementation.postServiceImp;
 
 @Controller
 public class CommentController {
 
 	@Autowired
 	UserRepository userRepository;
+//	@Autowired
+//	PostsRepository postsRepository;
+	
 	@Autowired
-	PostsRepository postsRepository;
+	PostService postService;
 	@Autowired
-	TagsRepository tagsRepository;
+	TagsRepository tagRepository;
 	@Autowired
-	CommentsRepository commentsRepository;
+	CommentsRepository commentRepository;
 
 	@PostMapping("/comment/{id}")
 	public String addComments(@PathVariable("id") int postId, HttpServletRequest request, Model model) {
@@ -39,25 +44,25 @@ public class CommentController {
 		comments.setPostId(postId);
 		comments.setCreateAt(LocalDateTime.now().toString());
 		comments.setUpdateAt(LocalDateTime.now().toString());
-		commentsRepository.save(comments);
+		commentRepository.save(comments);
 		return "redirect:/fullarticle/" + postId;
 	}
 
 	@PostMapping("/comment/edit/{id}")
 	public String editComments(@PathVariable("id") int commentId, Model model) {
-		Comment comments = commentsRepository.findById(commentId).get();
+		Comment comments = commentRepository.findById(commentId).get();
 		model.addAttribute("comments", comments);
 		return "updateComments";
 	}
 
 	@PostMapping("/delete/post/{id}")
 	public String deleteComment(@PathVariable("id") int commentId, Model model) {
-		Comment comments = commentsRepository.findById(commentId).get();
-		commentsRepository.deleteById(commentId);
+		Comment comments = commentRepository.findById(commentId).get();
+		commentRepository.deleteById(commentId);
 		int postId = comments.getPostId();
 
-		List<Comment> AllComments = commentsRepository.findCommentsById(postId);
-		Post postList = postsRepository.findById(postId);
+		List<Comment> AllComments = commentRepository.findCommentsById(postId);
+		Post postList = postService.getPostById(postId);
 
 		model.addAttribute("postList", postList);
 		model.addAttribute("AllComments", AllComments);
@@ -67,14 +72,14 @@ public class CommentController {
 
 	@PostMapping("/update/comment/{id}")
 	public String updateComments(@PathVariable("id") int commentId, HttpServletRequest request, Model model) {
-		Comment comments = commentsRepository.findById(commentId).get();
+		Comment comments = commentRepository.findById(commentId).get();
 		comments.setComment(request.getParameter("comments"));
 		comments.setName(request.getParameter("name"));
 		comments.setEmail(request.getParameter("email"));
 		comments.setUpdateAt(LocalDateTime.now().toString());
 		comments.setCreateAt(LocalDateTime.now().toString());
-		commentsRepository.save(comments);
-		Comment comments2 = commentsRepository.findById(commentId).get();
+		commentRepository.save(comments);
+		Comment comments2 = commentRepository.findById(commentId).get();
 
 		int postId = comments2.getPostId();
 		return "redirect:/fullarticle/" + postId;

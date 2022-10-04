@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.shashi.entities.Post;
 
@@ -25,6 +26,10 @@ public interface PostsRepository extends CrudRepository<Post, Integer> {
 	public Post findById(int id);
 
 	public List<Post> findAllByAuthor(String author);
+	
+	public Page<Post> findAllByAuthor(String author, Pageable pageable);
+	
+	
 
 
 	public List<Post> findByPublishAt(String dataAndTime);
@@ -33,7 +38,27 @@ public interface PostsRepository extends CrudRepository<Post, Integer> {
 
 	public List<Post> findByOrderByPublishAtAsc();
 	
-	public List<Post> findAllByAuthorOrTagsNameOrPublishAt(String name, String tags, String dateTime);
+	public List<Post> findAllByAuthorOrTagsName(String name, String tags);
+	
+	@Query("SELECT post "
+			+ "from "
+			+ "Post post "
+			+ "join "
+			+ "post.tags tag "
+			+ "where (tag.name) in (:tags)")
+	List<Post> findAllByTagsArray(@Param("tags") String[] tags);
+	
+	@Query("select post "
+			+ "from "
+			+ "Post post "
+			+ "where (post.author) in (:authors)")
+	List<Post> findAllByAuthorArray(String[] authors);
+	
+	@Query("select post "
+			+ "from "
+			+ "Post post "
+			+ "where (post.publishAt) in (:DateTime)")
+	List<Post> findAllByDateTimeArray(String[] DateTime);
 
 	/*
 	 * @Query(value =
