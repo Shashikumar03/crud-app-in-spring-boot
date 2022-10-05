@@ -16,7 +16,7 @@
 			<form action="login" method="post">
 				<button type="submit" name="login">Login</button>
 			</form>
-			<form action="signUp" method="post">
+			<form th:action="@{/sign}" >
 				<button type="submit" name="signUp">SignUp</button>
 			</form>
 			<form th:action="@{/createblog}" method="post">
