@@ -1,4 +1,6 @@
 package com.shashi.entities;
+import org.hibernate.validator.constraints.UniqueElements;
+
 import javax.annotation.Generated;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

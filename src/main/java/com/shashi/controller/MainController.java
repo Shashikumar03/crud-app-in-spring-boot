@@ -4,9 +4,11 @@ package com.shashi.controller;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import com.shashi.entities.User;
+import com.shashi.helper.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +39,7 @@ public class MainController {
 	@Autowired
 	CommentsRepository commentsRepository;
 	String searchName = "";
+
 
 	@RequestMapping("/")
 	public String blogs(@RequestParam(value = "start", defaultValue = "0") Integer start,
@@ -117,7 +120,7 @@ public class MainController {
 	 * postService.getPostByDateTime(date);
 	 * allPostByDateTime.addAll(postByDateTime); } List<String> allAuthors =
 	 * postService.getAllAuthor(); List<String> allTags =
-	 * tagsRepository.findAllTags(); List<String> allDateAndTime =
+	 * tagsRepository.findAllTags(); List<String> allDateAndTime
 	 * postService.getAllDateTime(); model.addAttribute("allDateTime",
 	 * allDateAndTime); model.addAttribute("author", allAuthors);
 	 * model.addAttribute("allTags", allTags); model.addAttribute("postData",
@@ -168,20 +171,36 @@ public class MainController {
 	}
 
 	@PostMapping("/register")
-	public String register(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
+	public String register(@Valid @ModelAttribute("user") User user, BindingResult result, Model model, HttpSession session) {
 
-		if(result.hasErrors()) {
+		try {
+	    if(userRepository.existsByName(user.getName())){
+			model.addAttribute("user",user);
+			throw  new Exception(" Name-already-exits");
 
-			System.out.println("hai ki tha");
+		}
+		if(userRepository.existsByEmail(user.getEmail())){
+			model.addAttribute("user",user);
+			throw  new Exception(" Email-already-exits");
+		}
+		if(result.hasErrors()){
 			model.addAttribute("user",user);
 			return "user";
 		}
-//		System.out.println(user);
-		System.out.println(result);
-		model.addAttribute("user",user);
-		userRepository.save(user);
 
-		return "user";
+			userRepository.save(user);
+			model.addAttribute("user", new User());
+			session.setAttribute("message", new Message("successfull","alert-success"));
+			return "user";
+
+		}catch (Exception e){
+			model.addAttribute("user", user);
+			session.setAttribute("message", new Message(" Server error !! "+e.getMessage(),"alter-danger"));
+			return "user";
+
+		}
+
+
 	}
 
 

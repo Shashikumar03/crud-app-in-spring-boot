@@ -34,4 +34,7 @@ public class Message {
         this.type = type;
     }
 
+    public Message() {
+        super();
+    }
 }
