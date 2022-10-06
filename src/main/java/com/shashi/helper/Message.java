@@ -5,6 +5,7 @@ public class Message {
     private  String type;
 
     public Message(String content, String type) {
+        super();
         this.content = content;
         this.type = type;
     }

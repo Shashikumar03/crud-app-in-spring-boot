@@ -1,32 +1,21 @@
 package com.shashi.controller;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
-import javax.security.auth.message.callback.PrivateKeyCallback.Request;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import com.shashi.entities.User;
-import com.shashi.helper.Message;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import com.shashi.entities.Comment;
 import com.shashi.entities.Post;
-import com.shashi.entities.Tag;
 import com.shashi.repository.CommentsRepository;
 import com.shashi.repository.PostsRepository;
 import com.shashi.repository.TagsRepository;
@@ -171,28 +160,30 @@ public class MainController {
 	}
 
 	@GetMapping("/sign")
-	public String signUp(Model model) {
+	public String signup(Model model) {
 
+		System.out.println("hello");
 		model.addAttribute("user", new User());
-		return "user";
+		return"user";
 	}
 
 	@PostMapping("/register")
-	public String register(@ModelAttribute("user") User user, HttpServletRequest session, Model model) {
+	public String register(@Valid @ModelAttribute("user") User user, BindingResult result, Model model) {
 
-		try {
-			user.setRole("Author");
-			userRepository.save(user);
-			model.addAttribute("user", new User());
-			session.setAttribute("message", new Message("Succesfully Register !!", "alert-success"));
+		if(result.hasErrors()) {
 
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			model.addAttribute("user", user);
-			session.setAttribute("message",new Message("Something Went Wrong !!" + e.getMessage(),"alert-danger"));
+			System.out.println("hai ki tha");
+			model.addAttribute("user",user);
 			return "user";
 		}
+//		System.out.println(user);
+		System.out.println(result);
+		model.addAttribute("user",user);
+		userRepository.save(user);
+
 		return "user";
 	}
+
+
+
 }
